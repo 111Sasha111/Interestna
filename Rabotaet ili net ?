@@ -1,0 +1,97 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+
+// Функция для генерации названий папок
+void generateFolderNames(const std::string& symbols, const int& count, std::ofstream& log) {
+    std::vector<std::string> folders;
+    int symbolsCount = symbols.size();
+
+    // Генерация всех возможных комбинаций названий папок
+    for (int i = 0; i < count; i++) {
+        std::string name = "";
+
+        for (int j = 0; j < symbolsCount; j++) {
+            int index = (i / (int)pow(symbolsCount, j)) % symbolsCount;
+            name += symbols[index];
+        }
+
+        folders.push_back(name);
+    }
+
+    // Запись в лог
+    for (const std::string& folder : folders) {
+        log << "Создана папка " << folder << std::endl;
+    }
+}
+
+// Функция для генерации названий файлов
+void generateFileNames(const std::string& symbols, const int& count, std::ofstream& log) {
+    std::vector<std::string> files;
+    int symbolsCount = symbols.size();
+
+    // Генерация всех возможных комбинаций названий файлов
+    for (int i = 0; i < count; i++) {
+        std::string name = "";
+
+        for (int j = 0; j < symbolsCount; j++) {
+            int index = (i / (int)pow(symbolsCount, j)) % symbolsCount;
+            name += symbols[index];
+        }
+
+        name += ".txt";
+        files.push_back(name);
+    }
+
+    // Запись в лог
+    for (const std::string& file : files) {
+        log << "В папке [название папки] создан файл " << file << std::endl;
+    }
+}
+
+int main() {
+    std::string folderSymbols;
+    int folderCount;
+    std::string fileSymbols;
+    int fileCount;
+
+    // Ввод данных от пользователя
+    std::cout << "Введите строку с уникальными символами для названия папок: ";
+    std::cin >> folderSymbols;
+
+    std::cout << "Введите количество папок: ";
+    std::cin >> folderCount;
+
+    std::cout << "Введите строку с уникальными символами для названия файлов: ";
+    std::cin >> fileSymbols;
+
+    std::cout << "Введите количество файлов: ";
+    std::cin >> fileCount;
+
+    // Проверка на ограничение в 255 символов
+    if (folderSymbols.size() > 255 || fileSymbols.size() > 255) {
+        std::cout << "Ошибка: строка символов превышает 255 символов." << std::endl;
+        return 0;
+    }
+
+    // Создание файла логов
+    std::ofstream log("log.txt");
+    if (!log.is_open()) {
+        std::cout << "Ошибка: не удалось создать файл логов." << std::endl;
+        return 0;
+    }
+
+    // Генерация названий папок
+    generateFolderNames(folderSymbols, folderCount, log);
+
+    // Генерация названий файлов
+    generateFileNames(fileSymbols, fileCount, log);
+
+    // Закрытие файла логов
+    log.close();
+
+    std::cout << "Операция завершена. Логи записаны в файл log.txt." << std::endl;
+
+    return 0;
+}
